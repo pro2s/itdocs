@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.contrib import admin
 from django import forms
 from finances.models import Company, CompanyInfo, ContractType, Contract, InvoiceType, Invoice, RecieptType, Payment
@@ -8,8 +9,10 @@ class PaymentAdminForm(forms.ModelForm):
 
   def __init__(self, *args, **kwargs):
     super(PaymentAdminForm, self).__init__(*args, **kwargs)
-    self.fields['invoices'].queryset = Invoice.objects.filter(contract=self.instance.contract)
-
+    if (self.instance.contract is None):
+        self.fields['invoices'].queryset = Invoice.objects.all()
+    else:
+        self.fields['invoices'].queryset = Invoice.objects.filter(contract=self.instance.contract)
   
 class PaymentAdmin(admin.ModelAdmin):
     form = PaymentAdminForm

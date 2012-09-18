@@ -75,9 +75,9 @@ class Payment(models.Model):
         (1, u'оплату'),
         (2, u'предоплату'),
 	)
-    contract = models.ForeignKey(Contract,null=True, blank=True)
-    invoices = models.ManyToManyField(Invoice, limit_choices_to= {'contract__exact': F('contract__id')}, null=True, blank=True)
-    number = models.IntegerField()
+    contract = models.ForeignKey(Contract, null=True, blank=True)
+    invoices = models.ManyToManyField(Invoice, null=True, blank=True)
+    number = models.IntegerField(null=True, blank=True)
     date = models.DateField()
     type = models.IntegerField( choices=PAY_TYPE)
     payment_date = models.DateField()
