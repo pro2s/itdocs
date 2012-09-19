@@ -13,5 +13,9 @@ urlpatterns = patterns('',
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
-     url(r'^admin/', include(admin.site.urls)),
+    url(r'^$', 'finances.views.index'),
+    url(r'^payments/$', 'finances.views.payments'),
+    url(r'^payments/(?P<payment_id>\d+)/print/$', 'finances.views.payments_print'),
+    url(r'^payments/(?P<payment_id>\d+)/edit/$', 'finances.views.payments_edit'),
+    url(r'^admin/', include(admin.site.urls)),
 )
