@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-from django.db.models import F
+from django.forms import ModelForm
 from django.contrib.auth.models import User
 
+PAY_TYPE = (
+    (1, u'оплату'),
+    (2, u'предоплату'),
+)
 
 class Company(models.Model):
     kod = models.IntegerField(primary_key=True)
@@ -71,10 +75,6 @@ class RecieptType(models.Model):
 	return self.name
 
 class Payment(models.Model):
-    PAY_TYPE = (
-        (1, u'оплату'),
-        (2, u'предоплату'),
-	)
     contract = models.ForeignKey(Contract, null=True, blank=True)
     invoices = models.ManyToManyField(Invoice, null=True, blank=True)
     number = models.IntegerField(null=True, blank=True)
@@ -91,3 +91,13 @@ class Payment(models.Model):
     def __unicode__(self):
 	return u'№ %s/604 от %s' % (self.number, self.date.strftime('%d.%m.%Y')) 
 
+class PaymentForm(ModelForm):
+    class Meta:
+        model = Payment
+    class Media:
+        css = {
+            'all':['admin/css/widgets.css',
+                   'css/uid-manage-form.css'],
+        }
+        # Adding this javascript is crucial
+        js = ['/admin/jsi18n/']
