@@ -17,5 +17,7 @@ urlpatterns = patterns('',
     url(r'^payments/$', 'finances.views.payments'),
     url(r'^payments/(?P<payment_id>\d+)/print/$', 'finances.views.payments_print'),
     url(r'^payments/(?P<payment_id>\d+)/edit/$', 'finances.views.payments_edit'),
+    url(r'^payments/new/$', 'finances.views.payments_edit'),
+    url(r'^payments/(?P<payment_id>\d+)/delete/$', 'finances.views.payments_delete'),
     url(r'^admin/', include(admin.site.urls)),
 )

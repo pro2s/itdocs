@@ -1,9 +1,10 @@
 {% if payments_list %}
     
     {% for payment in payments_list %}
-        №{{ payment.number }}/604 от {{ payment.date }} на сумму {{ payment.sum }} <a href="/payments/{{ payment.id }}/print/">печать</a> <a href="/payments/{{ payment.id }}/edit/">редактировать</a><br>
+        №{{ payment.number }}/604 от {{ payment.date }} на сумму {{ payment.sum }} <a href="/payments/{{ payment.id }}/print/">печать</a> <a href="/payments/{{ payment.id }}/edit/">редактировать</a> <a href="/payments/{{ payment.id }}/delete/">удалить</a><br>
     {% endfor %}
     
 {% else %}
     <p>No payments are available.</p>
 {% endif %}
+<a href="/payments/new/">добавить</a>

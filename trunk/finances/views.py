@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.forms.models import modelformset_factory
 from django.template import Context, loader
-from finances.models import Payment
-from django.shortcuts import render_to_response
+from finances.models import Payment, PaymentForm
+from django.shortcuts import render_to_response, get_object_or_404
 from django.http import Http404
 
 def index(request):
@@ -22,10 +23,32 @@ def payments_print(request, payment_id):
     except Payment.DoesNotExist:
         raise Http404
     return render_to_response('payments/print.html', {'payment': p})
-    
-def payments_edit(request, payment_id):
+
+def payments_delete(request, payment_id):
     try:
         p = Payment.objects.get(pk=payment_id)
     except Payment.DoesNotExist:
         raise Http404
-    return render_to_response('payments/print.html', {'payment': p})
+    p.delete()
+    return HttpResponseRedirect("/payments/")
+
+def payments_edit(request, id = None):
+    if id:
+        p = get_object_or_404(Payment, pk=id)
+    else:
+        p = Payment()
+    if request.method == 'POST':
+        submit = request.POST.get('cancel', None)
+        if submit:
+            return HttpResponseRedirect("/payments/")
+        else:
+            formset = PaymentForm(request.POST, instance=p)
+            if formset.is_valid():
+                formset.save()
+                return HttpResponseRedirect("/payments/")
+                # do something.
+    else:
+        formset = PaymentForm(instance=p)
+    return render_to_response("payments/edit.html", {
+        "formset": formset,
+    })
