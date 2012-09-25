@@ -1,8 +1,18 @@
 from django.contrib import admin
 from django import forms
-from finances.personal import Personal, NameProf, WeekendWork, PeopleToWork 
+from personal.models import Personal, NameProf, WeekendWork, PeopleToWork 
 
-admin.site.register(Personal)
+class PeopleToWorkInline(admin.TabularInline):
+    model = PeopleToWork
+    extra = 1
+
+class WeekendWorkAdmin(admin.ModelAdmin):
+    inlines = (PeopleToWorkInline,)
+
+class PersonalAdmin(admin.ModelAdmin):
+    inlines = (PeopleToWorkInline,)
+
+admin.site.register(Personal,PersonalAdmin)
 admin.site.register(NameProf)
-admin.site.register(WeekendWork)
+admin.site.register(WeekendWork,WeekendWorkAdmin)
 admin.site.register(PeopleToWork)
