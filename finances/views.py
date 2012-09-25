@@ -32,9 +32,9 @@ def payments_delete(request, payment_id):
     p.delete()
     return HttpResponseRedirect("/payments/")
 
-def payments_edit(request, id = None):
-    if id:
-        p = get_object_or_404(Payment, pk=id)
+def payments_edit(request, payment_id = None):
+    if payment_id:
+        p = get_object_or_404(Payment, pk=payment_id)
     else:
         p = Payment()
     if request.method == 'POST':
