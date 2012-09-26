@@ -7,17 +7,24 @@ class PaymentAdminForm(forms.ModelForm):
   class Meta:
     model = Payment
 
-  def __init__(self, *args, **kwargs):
-    super(PaymentAdminForm, self).__init__(*args, **kwargs)
-    if (self.instance.contract is None):
-        self.fields['invoices'].queryset = Invoice.objects.all()
-    else:
-        self.fields['invoices'].queryset = Invoice.objects.filter(contract=self.instance.contract)
-  
+#  def __init__(self, *args, **kwargs):
+#    super(PaymentAdminForm, self).__init__(*args, **kwargs)
+#    if (self.instance.contract is None):
+#        self.fields['invoices'].queryset = Invoice.objects.all()
+#    else:
+#        self.fields['invoices'].queryset = Invoice.objects.filter(contract=self.instance.contract)
+
+class PaymentInvoicesInline(admin.TabularInline):
+    model = Payment.invoices.through
+    
 class PaymentAdmin(admin.ModelAdmin):
     form = PaymentAdminForm
-    filter_horizontal = ('invoices',)
-
+#    filter_horizontal = ('invoices',)
+    inlines = [
+        PaymentInvoicesInline,
+    ]
+    exclude = ('invoices',)
+    
 class CompanyAdmin(admin.ModelAdmin):
 	 search_fields = ['name',]
 	
