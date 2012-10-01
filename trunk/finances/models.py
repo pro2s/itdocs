@@ -8,6 +8,14 @@ PAY_TYPE = (
     (2, u'предоплату'),
 )
 
+PLAN_ITEM_TYPE = (
+    (1, u'единоразово'),
+    (2, u'ежемесячно'),
+    (3, u'ежеквартально'),
+    (4, u'ежегодно'),
+    (5, u'до оплаты'),
+)
+
 class Company(models.Model):
     kod = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=60)
@@ -91,6 +99,24 @@ class Payment(models.Model):
     def __unicode__(self):
 	return u'№ %s/604 от %s' % (self.number, self.date.strftime('%d.%m.%Y')) 
 
+class Currency(models.Model):
+    name = models.CharField(max_length=50)    
+    short_name = models.CharField(max_length=10)    
+    kod = models.IntegerField(null=True, blank=True)
+   
+class PlanItem(models.Model):
+    number = models.IntegerField(null=True, blank=True)
+    description = models.CharField(max_length=250)    
+    sum = models.IntegerField()
+    type = models.IntegerField(choices=PLAN_ITEM_TYPE)
+    currency = models.ForeignKey(Currency, null=True, blank=True)
+    
+class Plan(models.Model):
+    number = models.IntegerField(null=True, blank=True)
+    date = models.DateField()
+    items = models.ManyToManyField(PlanItem)
+    
+    
 class PaymentForm(ModelForm):
     class Meta:
         model = Payment
@@ -101,3 +127,4 @@ class PaymentForm(ModelForm):
         }
         # Adding this javascript is crucial
         js = ['/admin/jsi18n/']
+
