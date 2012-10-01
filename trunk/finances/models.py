@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.db.models.signals import post_save
 from django.db import models
 from django.forms import ModelForm
 from django.contrib.auth.models import User
@@ -103,28 +104,29 @@ class Currency(models.Model):
     name = models.CharField(max_length=50)    
     short_name = models.CharField(max_length=10)    
     kod = models.IntegerField(null=True, blank=True)
-   
+    def __unicode__(self):
+        return self.short_name
+	
 class PlanItem(models.Model):
     number = models.IntegerField(null=True, blank=True)
     description = models.CharField(max_length=250)    
     sum = models.IntegerField()
     type = models.IntegerField(choices=PLAN_ITEM_TYPE)
     currency = models.ForeignKey(Currency, null=True, blank=True)
-    
+    def __unicode__(self):
+        return self.description
+        
 class Plan(models.Model):
     number = models.IntegerField(null=True, blank=True)
     date = models.DateField()
     items = models.ManyToManyField(PlanItem)
     
     
-class PaymentForm(ModelForm):
-    class Meta:
-        model = Payment
-    class Media:
-        css = {
-            'all':['admin/css/widgets.css',
-                   'css/uid-manage-form.css'],
-        }
-        # Adding this javascript is crucial
-        js = ['/admin/jsi18n/']
+def plan_created(sender, instance, created, **kwargs):
+    if created:
+        #create regular items
+        for item in PlanItem.objects.exclude(type=1):
+            print 'the object is now saved.'
+            #add items 
 
+post_save.connect(plan_created, sender=Plan)
